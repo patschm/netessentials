@@ -9,7 +9,27 @@ string constring = @"Server=.\sqlexpress;Database=acme;Trusted_Connection=True;M
 //ModifyData();
 //DeleteData();
 
-QueriesExtension();
+//QueriesExtension();
+QueriesPatatGeneratie();
+
+void QueriesPatatGeneratie()
+{
+    DbContextOptionsBuilder builder = new DbContextOptionsBuilder();
+    builder.LogTo(evt => Console.WriteLine(evt), LogLevel.Information);
+    builder.UseSqlServer(constring);
+    ACMEDbContext context = new ACMEDbContext(builder.Options);
+
+    var query = from p in context.People 
+                orderby p.Age 
+                select p;
+
+    //query = query.Where(p => p.FirstName.StartsWith("P"));
+
+    foreach(var p in query.Skip(1).Take(2))
+    {
+        Console.WriteLine($"{p.FirstName} {p.LastName} ({p.Age})");
+    }
+}
 
 void QueriesExtension()
 {
